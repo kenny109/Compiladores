@@ -1,1 +1,58 @@
 
+#include <iostream>
+#include <cmath> 
+#include <vector> 
+#include <fstream>
+#include <chrono> 
+#include <iomanip>
+using namespace std::chrono;
+using namespace std;
+
+double calcular_area(double base_mayor, double base_menor, double altura ){
+	return (0.5 * (base_mayor + base_menor )) * altura ;  
+}
+double op (double x){
+    return 7 * sqrt(x) ;
+}
+double calcular_area_total (double n, double largo, double b_m){
+	double area_total = 0; 
+	double temp=b_m; 
+	double area_trapecio; 
+	double intervalo = largo/n; 
+	ofstream archivo("trapeciodata.dat");
+	for (int i = 0; i<n; i++){
+		auto start = high_resolution_clock::now();
+		area_trapecio = calcular_area(op(temp+intervalo), op(temp), (largo/n));
+		auto end = high_resolution_clock::now(); 
+		auto duration = duration_cast<nanoseconds>(end - start).count();
+		temp = temp + intervalo; 
+		 //area_trapecio = round(area_trapecio * 1e5) / 1e5;
+		cout<<area_trapecio<<endl; 
+
+		area_total = area_total+area_trapecio; 
+		archivo<<i+1<<"\t"<<duration<<endl; 
+	}
+	archivo.close(); 
+	cout.precision(5);
+
+	cout<<"El area total es: "<<area_total<<endl;
+	return area_total; 
+}
+int main()
+{
+      std::cout << std::fixed << std::setprecision(5);
+
+    double base_menor, base_mayor; 
+	int num_trapecios; 
+	cout<<"Ingrese la base menor: "; 
+	cin>> base_menor;
+	cout<<"Ingrese la base mayor: "; 
+	cin>> base_mayor;
+	cout<<"Ingrese el numero de trapecios: "; 
+	cin>> num_trapecios;
+
+	double largo = base_mayor-base_menor;
+
+	calcular_area_total (num_trapecios,largo,base_menor); 
+        return 0; 
+}
